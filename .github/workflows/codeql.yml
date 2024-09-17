@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         language: ['go']
-        build-mode: ['auto']
+        build-mode: ['manual']
 
     steps:
     - name: Checkout repository

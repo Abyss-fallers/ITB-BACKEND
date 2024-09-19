@@ -19,7 +19,7 @@ type skill string
 type User struct {
 	gorm.Model
 	Email                      string    `json:"email"`
-	Password                   string    `json:"-"`
+	Password                   string    `json:"-" gorm:"type:varchar(100)"`
 	Fullname                   string    `json:"fullname"`
 	AvatarURL                  string    `json:"-"`
 	Role                       role      `json:"-"`

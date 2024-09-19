@@ -33,7 +33,7 @@ func GenerateTokenAndSetCookie(userID int) (fiber.Cookie, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(os.Getenv("JWT_SECRET"))
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
 		return fiber.Cookie{}, err
 	}

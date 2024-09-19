@@ -81,7 +81,7 @@ func Authentication(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(map[string]any{"error": "пароль неверный"})
 	}
 
-	token, err := GenerateTokenAndSetCookie(int(user.ID))
+	token, err := GenerateTokenAndSetCookie(user)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(map[string]any{"error": err.Error()})
 	}
@@ -91,6 +91,28 @@ func Authentication(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(map[string]any{})
 }
 
-func Authorization(c *fiber.Ctx) {
+func Authorization(next fiber.Handler, role models.Role) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		c.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSONCharsetUTF8)
+		token := c.Cookies("token")
 
+		if len(token) == 0 {
+			return c.Status(fiber.StatusUnauthorized).JSON(map[string]any{"error": "authentication required"})
+		}
+
+		claims, err := DecodeToken(token)
+		if err != nil {
+			return c.Status(fiber.StatusUnauthorized).JSON(map[string]any{"error": err.Error()})
+		}
+
+		if !claims.ExpiresAt.Time.After(time.Now()) {
+			return c.Status(fiber.StatusUnauthorized).JSON(map[string]any{"error": "authentication required"})
+		}
+
+		if claims.UserRole == role {
+			return next(c)
+		}
+
+		return c.Status(fiber.StatusNotAcceptable).JSON(map[string]any{"error": "not accepted"})
+	}
 }

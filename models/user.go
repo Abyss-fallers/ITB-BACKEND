@@ -6,10 +6,10 @@ import (
 	"gorm.io/gorm"
 )
 
-type role int
+type Role int
 
 const (
-	RoleMember role = iota
+	RoleMember Role = iota
 	RoleMod
 	RoleAdm
 )
@@ -22,7 +22,7 @@ type User struct {
 	Password                   string    `json:"-" gorm:"type:varchar(100)"`
 	Fullname                   string    `json:"fullname"`
 	AvatarURL                  string    `json:"-"`
-	Role                       role      `json:"-"`
+	Role                       Role      `json:"-"`
 	LastLoginAt                time.Time `json:"last-login"`
 	IsActive                   bool      `json:"-"`
 	IsVerified                 bool      `json:"is-verified"`

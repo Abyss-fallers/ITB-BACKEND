@@ -5,6 +5,7 @@ import (
 	"log"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/Abyss-fallers/ITB-go-back/database"
 	"github.com/Abyss-fallers/ITB-go-back/models"
@@ -33,4 +34,17 @@ func ValidateUser(user models.User) error {
 	}
 
 	return nil
+}
+
+func ValidateToken(token string) (*Claims, error) {
+	claims, err := DecodeToken(token)
+	if err != nil {
+		return &Claims{}, err
+	}
+
+	if !claims.ExpiresAt.Time.After(time.Now()) {
+		return &Claims{}, errors.New("authentication required")
+	}
+
+	return &Claims{}, nil
 }

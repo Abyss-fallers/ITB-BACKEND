@@ -83,7 +83,7 @@ func Authentication(c *fiber.Ctx) error {
 
 	token, err := GenerateTokenAndSetCookie(int(user.ID))
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(map[string]any{"error": err})
+		return c.Status(fiber.StatusInternalServerError).JSON(map[string]any{"error": err.Error()})
 	}
 
 	c.Cookie(&token)
